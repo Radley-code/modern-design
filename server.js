@@ -46,6 +46,32 @@ app.get('/courses', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'courses.html'));
 });
 
+app.get('/results', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'results.html'));
+});
+
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'profile.html'));
+});
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin-dashboard.html'));
+});
+
+app.get('/admin/students', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin-students.html'));
+});
+
+app.get('/admin/courses', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin-courses.html'));
+});
+
+app.get('/admin/results', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin-results.html'));
+});
+
+app.use('/api/admin', require('./routes/admin'));
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);

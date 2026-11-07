@@ -99,6 +99,7 @@
         <div>
           <h2>Welcome back, <span id="welcomeName">Student</span> 👋</h2>
           <p>Here’s an overview of your academic progress.</p>
+          <p id="profileLoadError" class="mb-0 mt-2" role="status" hidden></p>
         </div>
         <div class="banner-stats">
           <div class="stat">
@@ -195,29 +196,93 @@
   <script>
     // ========== AUTH CHECK ==========
     const token = localStorage.getItem('token');
-    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    let cachedUser = null;
 
-    if (!token || !user) {
+    if (!token) {
       window.location.href = '/login';
+    } else {
+      try {
+        cachedUser = JSON.parse(localStorage.getItem('user') || 'null');
+      } catch {
+        localStorage.removeItem('user');
+      }
     }
 
-    // Redirect admin to admin panel
-    if (user.role === 'admin') {
-      window.location.href = '/admin';
+    function renderUser(user) {
+      if (!user || typeof user.fullName !== 'string' || !user.fullName.trim()) {
+        return false;
+      }
+
+      const fullName = user.fullName.trim().replace(/\s+/g, ' ');
+      const names = fullName.split(' ');
+      document.getElementById('welcomeName').textContent = fullName;
+      document.getElementById('sidebarUserName').textContent = fullName;
+      document.getElementById('sidebarUserRole').textContent =
+        user.level ? `Student • ${user.level} Level` : 'Student';
+      document.getElementById('userAvatar').textContent =
+        (names.length >= 2 ? names[0][0] + names[1][0] : names[0].substring(0, 2)).toUpperCase();
+      if (user.level) {
+        document.getElementById('statLevel').textContent = user.level;
+      }
+      return true;
     }
 
-    // ========== POPULATE USER INFO ==========
-    document.getElementById('welcomeName').textContent = user.fullName.split(' ')[0];
-    document.getElementById('sidebarUserName').textContent = user.fullName;
-    document.getElementById('sidebarUserRole').textContent = `Student • ${user.level} Level`;
-    document.getElementById('statLevel').textContent = user.level;
-    
-    // Avatar initials
-    const names = user.fullName.split(' ');
-    const initials = names.length >= 2 
-      ? names[0][0] + names[1][0] 
-      : names[0].substring(0, 2);
-    document.getElementById('userAvatar').textContent = initials.toUpperCase();
+    // Render the login/registration profile immediately so the dashboard
+    // never stays on placeholder text while the database request is pending.
+    renderUser(cachedUser);
+
+    // Load the current profile from the database, rather than relying on
+    // potentially stale user details cached by the browser.
+    async function loadCurrentUser() {
+      try {
+        const response = await fetch('/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await response.json();
+
+        if (!response.ok || !data.success || !data.user) {
+          if (response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+            return;
+          }
+          throw new Error(data.message || 'Unable to load your profile.');
+        }
+
+        const user = data.user;
+        if (user.role === 'admin') {
+          window.location.href = '/admin';
+          return;
+        }
+
+        if (!renderUser(user)) {
+          throw new Error('Your account does not have a name set.');
+        }
+
+        const profile = {
+          id: user._id || user.id,
+          fullName: user.fullName,
+          email: user.email,
+          role: user.role,
+          matricNumber: user.matricNumber,
+          department: user.department,
+          level: user.level
+        };
+        localStorage.setItem('user', JSON.stringify(profile));
+      } catch (error) {
+        const profileError = document.getElementById('profileLoadError');
+        profileError.textContent = renderUser(cachedUser)
+          ? 'Showing your saved account details. Your latest profile could not be loaded.'
+          : (error.message || 'Unable to load your profile. Please try again.');
+        profileError.hidden = false;
+        if (!renderUser(cachedUser)) {
+          document.getElementById('sidebarUserName').textContent = 'Profile unavailable';
+        }
+      }
+    }
+
+    if (token) loadCurrentUser();
 
     // ========== LOGOUT ==========
     document.getElementById('logoutBtn').addEventListener('click', (e) => {

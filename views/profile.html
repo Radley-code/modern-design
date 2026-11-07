@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | Student Academic Portal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <i class="bi bi-mortarboard-fill"></i>
+        <span>AcadPortal</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section">Main</div>
+      <a href="/dashboard" class="nav-item"><i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span></a>
+      <a href="/courses" class="nav-item"><i class="bi bi-book-fill"></i><span>Courses</span></a>
+      <a href="/results" class="nav-item"><i class="bi bi-clipboard-data-fill"></i><span>Results</span></a>
+      <a href="/timetable" class="nav-item"><i class="bi bi-calendar-week-fill"></i><span>Timetable</span></a>
+      <div class="nav-section">Account</div>
+      <a href="/profile" class="nav-item active"><i class="bi bi-person-fill"></i><span>Profile</span></a>
+      <a href="#" class="nav-item" id="logoutBtn"><i class="bi bi-box-arrow-right"></i><span>Logout</span></a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="avatar" id="userAvatar">--</div>
+        <div>
+          <div class="user-name" id="sidebarUserName">Loading...</div>
+          <div class="user-role" id="sidebarUserRole">Student</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <header class="top-navbar">
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn-toggle-sidebar" id="sidebarToggle"><i class="bi bi-list"></i></button>
+        <div class="page-title">My Profile</div>
+      </div>
+    </header>
+
+    <div class="page-content">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card-modern">
+            <div class="card-header-modern">
+              <h5>Personal Information</h5>
+            </div>
+            <div class="p-4">
+              <div class="text-center mb-4">
+                <div class="avatar mx-auto mb-3" id="profileAvatar" style="width: 80px; height: 80px; font-size: 1.6rem;"></div>
+                <h4 id="profileName">-</h4>
+                <p class="text-muted mb-0" id="profileRole">Student</p>
+              </div>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label text-muted small">Full Name</label>
+                  <div class="fw-semibold" id="infoFullName">-</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small">Email Address</label>
+                  <div class="fw-semibold" id="infoEmail">-</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small">Matric Number</label>
+                  <div class="fw-semibold" id="infoMatric">-</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small">Department</label>
+                  <div class="fw-semibold" id="infoDepartment">-</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small">Level</label>
+                  <div class="fw-semibold" id="infoLevel">-</div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label text-muted small">Account Status</label>
+                  <div><span class="badge bg-success">Active</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+
+    if (!token || !user) window.location.href = '/login';
+
+    // Populate everything
+    document.getElementById('sidebarUserName').textContent = user.fullName;
+    document.getElementById('sidebarUserRole').textContent = `Student • ${user.level} Level`;
+    document.getElementById('profileName').textContent = user.fullName;
+    document.getElementById('profileRole').textContent = `Student • ${user.level} Level`;
+    document.getElementById('infoFullName').textContent = user.fullName;
+    document.getElementById('infoEmail').textContent = user.email;
+    document.getElementById('infoMatric').textContent = user.matricNumber || 'N/A';
+    document.getElementById('infoDepartment').textContent = user.department;
+    document.getElementById('infoLevel').textContent = user.level + ' Level';
+
+    const names = user.fullName.split(' ');
+    const initials = (names.length >= 2 ? names[0][0] + names[1][0] : names[0].substring(0, 2)).toUpperCase();
+    document.getElementById('userAvatar').textContent = initials;
+    document.getElementById('profileAvatar').textContent = initials;
+
+    document.getElementById('logoutBtn').addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.clear();
+      window.location.href = '/login';
+    });
+
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+      document.getElementById('sidebar').classList.toggle('show');
+    });
+  </script>
+</body>
+</html>
