@@ -1,0 +1,889 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register | Student Academic Portal</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/style.css" />
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(
+            ellipse at 15% 15%,
+            rgba(197, 154, 107, 0.16),
+            transparent 40%
+          ),
+          linear-gradient(135deg, #182a2c 0%, #233f3d 58%, #315b57 100%);
+        padding: 1.5rem;
+        font-family: Inter, sans-serif;
+      }
+      .auth-card {
+        background: #fbfaf6;
+        border-radius: 24px;
+        box-shadow: 0 25px 60px -16px rgba(15, 31, 31, 0.36);
+        width: 100%;
+        max-width: 760px;
+        padding: clamp(1.5rem, 5vw, 3rem);
+        animation: cardEnter 0.55s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      }
+      .auth-logo {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+      .auth-logo i {
+        display: inline-grid;
+        place-items: center;
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 18px;
+        background: #e7eeea;
+        color: #315b57;
+        font-size: 1.8rem;
+      }
+      .auth-logo h1 {
+        font-size: 1.65rem;
+        font-weight: 700;
+        color: #263638;
+        margin: 0.85rem 0 0.25rem;
+      }
+      .auth-logo p {
+        color: #697978;
+        margin: 0;
+      }
+      .progress-section {
+        margin: 0 auto 1.75rem;
+        max-width: 600px;
+      }
+      .progress-copy {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        color: #697978;
+        font-size: 0.82rem;
+        margin-bottom: 0.55rem;
+      }
+      .progress-copy strong {
+        color: #315b57;
+        font-weight: 700;
+      }
+      .progress-track {
+        height: 8px;
+        overflow: hidden;
+        background: #e8e8e1;
+        border-radius: 999px;
+      }
+      .progress-fill {
+        width: 0;
+        height: 100%;
+        background: linear-gradient(90deg, #315b57, #78948a);
+        border-radius: inherit;
+        transition: width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .wizard-layout {
+        display: grid;
+        grid-template-columns: 190px minmax(0, 1fr);
+        gap: 2rem;
+        align-items: start;
+      }
+      .step-menu {
+        display: grid;
+        gap: 0.45rem;
+        padding-top: 0.25rem;
+      }
+      .step-menu button {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        width: 100%;
+        border: 0;
+        border-radius: 12px;
+        padding: 0.65rem 0.7rem;
+        background: transparent;
+        color: #899794;
+        text-align: left;
+        font-size: 0.83rem;
+        transition:
+          background 0.2s ease,
+          color 0.2s ease;
+      }
+      .step-menu button[aria-current="step"] {
+        color: #315b57;
+        background: #e7eeea;
+        font-weight: 600;
+      }
+      .step-menu button.is-complete {
+        color: #455553;
+      }
+      .step-menu button:disabled {
+        cursor: default;
+        opacity: 0.72;
+      }
+      .step-number {
+        display: grid;
+        place-items: center;
+        width: 1.7rem;
+        height: 1.7rem;
+        flex: 0 0 1.7rem;
+        border: 1px solid #dedfd8;
+        border-radius: 50%;
+        background: #fff;
+        color: #697978;
+        font-size: 0.75rem;
+      }
+      .step-menu button[aria-current="step"] .step-number {
+        border-color: #315b57;
+        background: #315b57;
+        color: #fff;
+      }
+      .step-menu button.is-complete .step-number {
+        border-color: #c9d9d0;
+        background: #e2ece7;
+        color: #315b57;
+      }
+      .question-area {
+        min-width: 0;
+      }
+      .question-card {
+        min-height: 290px;
+        padding: clamp(1.25rem, 4vw, 2rem);
+        border: 1px solid #e4e4dc;
+        border-radius: 18px;
+        background: linear-gradient(145deg, #fff, #f8f8f3);
+        box-shadow: 0 12px 30px rgba(35, 54, 53, 0.055);
+      }
+      .question-card.is-entering {
+        animation: questionEnter 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+      }
+      .question-icon {
+        display: grid;
+        place-items: center;
+        width: 2.8rem;
+        height: 2.8rem;
+        border-radius: 13px;
+        margin-bottom: 1.25rem;
+        background: #e7eeea;
+        color: #315b57;
+        font-size: 1.2rem;
+      }
+      .question-kicker {
+        color: #a87543;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .question-card h2 {
+        margin: 0.35rem 0 0.45rem;
+        color: #263638;
+        font-size: clamp(1.35rem, 4vw, 1.7rem);
+        font-weight: 700;
+        letter-spacing: -0.035em;
+      }
+      .question-hint {
+        margin-bottom: 1.5rem;
+        color: #697978;
+        font-size: 0.9rem;
+      }
+      .form-control,
+      .form-select {
+        min-height: 52px;
+        padding: 0.75rem 1rem;
+        border-radius: 11px;
+        border: 1px solid #dedfd8;
+        font-size: 0.95rem;
+      }
+      .form-control:focus,
+      .form-select:focus {
+        border-color: #527a73;
+        box-shadow: 0 0 0 4px rgba(49, 91, 87, 0.13);
+      }
+      .password-field {
+        position: relative;
+      }
+      .password-field .form-control {
+        padding-right: 3.25rem;
+      }
+      .password-toggle {
+        position: absolute;
+        top: 50%;
+        right: 0.55rem;
+        display: grid;
+        place-items: center;
+        width: 2.25rem;
+        height: 2.25rem;
+        border: 0;
+        border-radius: 9px;
+        background: transparent;
+        color: #697978;
+        transform: translateY(-50%);
+        transition: background 0.2s ease, color 0.2s ease;
+      }
+      .password-toggle:hover {
+        background: #e7eeea;
+        color: #315b57;
+      }
+      .password-toggle:focus-visible {
+        outline: 3px solid rgba(49, 91, 87, 0.3);
+        outline-offset: 1px;
+      }
+      .field-label {
+        display: block;
+        margin-bottom: 0.55rem;
+        color: #455553;
+        font-size: 0.85rem;
+        font-weight: 600;
+      }
+      .wizard-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 1.25rem;
+      }
+      .btn-auth {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        min-width: 145px;
+        padding: 0.8rem 1.1rem;
+        border: 0;
+        border-radius: 11px;
+        background: linear-gradient(135deg, #315b57, #527a73);
+        font-weight: 600;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+      .btn-auth:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(49, 91, 87, 0.24);
+      }
+      .btn-auth:disabled {
+        transform: none;
+        opacity: 0.7;
+      }
+      .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.7rem 0;
+        border: 0;
+        background: transparent;
+        color: #697978;
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .btn-back:hover:not(:disabled) {
+        color: #315b57;
+      }
+      .btn-back:disabled {
+        visibility: hidden;
+      }
+      .auth-footer {
+        text-align: center;
+        margin-top: 1.75rem;
+        color: #697978;
+        font-size: 0.9rem;
+      }
+      .auth-footer a {
+        color: #315b57;
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .auth-footer a:hover {
+        text-decoration: underline;
+      }
+      #alertBox {
+        max-width: 600px;
+        margin: 0 auto 1rem;
+      }
+      @keyframes cardEnter {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes questionEnter {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.99);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+      @media (max-width: 640px) {
+        body {
+          align-items: flex-start;
+          padding: 1rem 0.75rem;
+        }
+        .auth-card {
+          border-radius: 19px;
+          padding: 1.5rem 1.1rem;
+        }
+        .auth-logo {
+          margin-bottom: 1.5rem;
+        }
+        .wizard-layout {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+        .step-menu {
+          display: flex;
+          overflow-x: auto;
+          gap: 0.35rem;
+          padding: 0.25rem 0 0.5rem;
+          scrollbar-width: thin;
+        }
+        .step-menu button {
+          flex: 0 0 auto;
+          width: auto;
+          padding: 0.45rem;
+        }
+        .step-label {
+          display: none;
+        }
+        .question-card {
+          min-height: 270px;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="auth-card">
+      <header class="auth-logo">
+        <i class="bi bi-mortarboard-fill" aria-hidden="true"></i>
+        <h1>Create your account</h1>
+        <p>Let’s get your student profile set up, one step at a time.</p>
+      </header>
+
+      <div id="alertBox" role="alert" aria-live="polite"></div>
+
+      <section class="progress-section" aria-label="Registration progress">
+        <div class="progress-copy">
+          <span id="progressLabel">Your details</span>
+          <strong id="progressCount">0 of 6 complete</strong>
+        </div>
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-label="Registration details completed"
+          aria-valuemin="0"
+          aria-valuemax="6"
+          aria-valuenow="0"
+        >
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </section>
+
+      <form id="registerForm" novalidate>
+        <div class="wizard-layout">
+          <nav
+            class="step-menu"
+            id="stepMenu"
+            aria-label="Registration steps"
+          ></nav>
+
+          <div class="question-area">
+            <section class="question-card" id="questionCard" aria-live="polite">
+              <div
+                class="question-icon"
+                id="questionIcon"
+                aria-hidden="true"
+              ></div>
+              <span class="question-kicker" id="questionKicker"></span>
+              <h2 id="questionTitle"></h2>
+              <p class="question-hint" id="questionHint"></p>
+              <div id="questionInput"></div>
+            </section>
+
+            <div class="wizard-controls">
+              <button type="button" class="btn-back" id="backButton">
+                <i class="bi bi-arrow-left" aria-hidden="true"></i>
+                Back
+              </button>
+              <button
+                type="submit"
+                class="btn btn-primary btn-auth"
+                id="nextButton"
+              >
+                Continue
+                <i class="bi bi-arrow-right" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <footer class="auth-footer">
+        Already have an account? <a href="/login">Sign in</a>
+      </footer>
+    </main>
+
+    <script>
+      const steps = [
+        {
+          id: "fullName",
+          label: "Your name",
+          title: "What should we call you?",
+          hint: "Enter your full name as it appears on your student records.",
+          icon: "bi-person",
+          type: "text",
+          placeholder: "e.g. Alex Johnson",
+          autocomplete: "name",
+        },
+        {
+          id: "email",
+          label: "Email",
+          title: "What’s your email address?",
+          hint: "We’ll use this email when you sign in to your account.",
+          icon: "bi-envelope",
+          type: "email",
+          placeholder: "you@example.com",
+          autocomplete: "email",
+        },
+        {
+          id: "matricNumber",
+          label: "Matric number",
+          title: "What’s your matric number?",
+          hint: "Use the number assigned to you by your institution.",
+          icon: "bi-person-vcard",
+          type: "text",
+          placeholder: "e.g. CPE/2021/001",
+          autocomplete: "off",
+        },
+        {
+          id: "department",
+          label: "Department",
+          title: "Which department are you in?",
+          hint: "You can update your department details later if they change.",
+          icon: "bi-building",
+          type: "text",
+          placeholder: "e.g. Computer Engineering",
+          autocomplete: "organization-title",
+        },
+        {
+          id: "level",
+          label: "Level",
+          title: "What level are you currently in?",
+          hint: "Choose your current academic level.",
+          icon: "bi-mortarboard",
+          type: "select",
+          options: [
+            ["100", "100 Level"],
+            ["200", "200 Level"],
+            ["300", "300 Level"],
+            ["400", "400 Level"],
+            ["500", "500 Level"],
+          ],
+        },
+        {
+          id: "password",
+          label: "Password",
+          title: "Create a password",
+          hint: "Choose a password with at least 6 characters.",
+          icon: "bi-shield-lock",
+          type: "password",
+          placeholder: "At least 6 characters",
+          autocomplete: "new-password",
+          minlength: 6,
+        },
+      ];
+
+      const form = document.getElementById("registerForm");
+      const questionInput = document.getElementById("questionInput");
+      const stepMenu = document.getElementById("stepMenu");
+      const questionCard = document.getElementById("questionCard");
+      const backButton = document.getElementById("backButton");
+      const nextButton = document.getElementById("nextButton");
+      const alertBox = document.getElementById("alertBox");
+      const progressFill = document.getElementById("progressFill");
+      const progressTrack = document.querySelector(".progress-track");
+      const draftStorageKey = "studentPortalRegistrationDraft:v1";
+      const answers = {};
+      let currentStep = 0;
+      let isSubmitting = false;
+
+      function getCurrentField() {
+        return document.getElementById(steps[currentStep].id);
+      }
+
+      function showStorageWarning(message) {
+        alertBox.innerHTML = "";
+        const alert = document.createElement("div");
+        alert.className = "alert alert-warning mb-0";
+        alert.textContent = message;
+        alertBox.appendChild(alert);
+      }
+
+      function saveDraft() {
+        const savedAnswers = {};
+        steps.forEach((step) => {
+          if (step.id !== "password" && typeof answers[step.id] === "string") {
+            savedAnswers[step.id] = answers[step.id];
+          }
+        });
+
+        try {
+          localStorage.setItem(
+            draftStorageKey,
+            JSON.stringify({ answers: savedAnswers, currentStep }),
+          );
+        } catch {
+          showStorageWarning(
+            "Your browser could not save this registration draft. Keep this page open to avoid losing your progress.",
+          );
+        }
+      }
+
+      function removeDraft() {
+        try {
+          localStorage.removeItem(draftStorageKey);
+          return true;
+        } catch {
+          showStorageWarning(
+            "Your browser could not clear the saved registration draft.",
+          );
+          return false;
+        }
+      }
+
+      function restoreDraft() {
+        let savedDraft;
+        try {
+          const serializedDraft = localStorage.getItem(draftStorageKey);
+          if (!serializedDraft) return;
+          savedDraft = JSON.parse(serializedDraft);
+        } catch {
+          if (removeDraft()) {
+            showStorageWarning(
+              "Your saved registration draft could not be read, so a new one has been started.",
+            );
+          }
+          return;
+        }
+
+        if (!savedDraft || typeof savedDraft !== "object") {
+          removeDraft();
+          return;
+        }
+
+        if (savedDraft.answers && typeof savedDraft.answers === "object") {
+          steps.forEach((step) => {
+            const value = savedDraft.answers[step.id];
+            if (step.id !== "password" && typeof value === "string") {
+              answers[step.id] = value;
+            }
+          });
+        }
+        if (
+          Number.isInteger(savedDraft.currentStep) &&
+          savedDraft.currentStep >= 0 &&
+          savedDraft.currentStep < steps.length
+        ) {
+          currentStep = savedDraft.currentStep;
+        }
+      }
+
+      function renderStep() {
+        const step = steps[currentStep];
+        const isLastStep = currentStep === steps.length - 1;
+        document.getElementById("questionIcon").innerHTML =
+          `<i class="bi ${step.icon}"></i>`;
+        document.getElementById("questionKicker").textContent =
+          `Step ${currentStep + 1} of ${steps.length}`;
+        document.getElementById("questionTitle").textContent = step.title;
+        document.getElementById("questionHint").textContent = step.hint;
+
+        if (step.type === "select") {
+          const options = step.options
+            .map(
+              ([value, label]) => `<option value="${value}">${label}</option>`,
+            )
+            .join("");
+          questionInput.innerHTML = `
+            <label class="field-label" for="${step.id}">${step.label}</label>
+            <select class="form-select" id="${step.id}" name="${step.id}" required>
+              <option value="" disabled selected>Select your level</option>
+              ${options}
+            </select>`;
+        } else {
+          const inputMarkup = `
+            <input
+              class="form-control"
+              id="${step.id}"
+              name="${step.id}"
+              type="${step.type}"
+              placeholder="${step.placeholder}"
+              autocomplete="${step.autocomplete}"
+              ${step.minlength ? `minlength="${step.minlength}"` : ""}
+              required
+            />`;
+          questionInput.innerHTML =
+            step.type === "password"
+              ? `
+                <label class="field-label" for="${step.id}">${step.label}</label>
+                <div class="password-field">
+                  ${inputMarkup}
+                  <button
+                    type="button"
+                    class="password-toggle"
+                    id="passwordToggle"
+                    aria-label="Show password"
+                    aria-pressed="false"
+                    aria-controls="${step.id}"
+                  >
+                    <i class="bi bi-eye" aria-hidden="true"></i>
+                  </button>
+                </div>`
+              : `
+                <label class="field-label" for="${step.id}">${step.label}</label>
+                ${inputMarkup}`;
+        }
+
+        const field = getCurrentField();
+        if (Object.hasOwn(answers, step.id)) {
+          field.value = answers[step.id];
+        }
+        const saveAnswer = () => {
+          answers[step.id] = field.value;
+          saveDraft();
+          updateProgress();
+        };
+        field.addEventListener("input", saveAnswer);
+        field.addEventListener("change", saveAnswer);
+        if (step.type === "password") {
+          document
+            .getElementById("passwordToggle")
+            .addEventListener("click", (event) => {
+              const button = event.currentTarget;
+              const showingPassword = field.type === "password";
+              field.type = showingPassword ? "text" : "password";
+              button.setAttribute(
+                "aria-label",
+                showingPassword ? "Hide password" : "Show password",
+              );
+              button.setAttribute("aria-pressed", String(showingPassword));
+              button.innerHTML = showingPassword
+                ? '<i class="bi bi-eye-slash" aria-hidden="true"></i>'
+                : '<i class="bi bi-eye" aria-hidden="true"></i>';
+              field.focus({ preventScroll: true });
+            });
+        }
+        backButton.disabled = currentStep === 0;
+        nextButton.innerHTML = isLastStep
+          ? 'Create account <i class="bi bi-check2" aria-hidden="true"></i>'
+          : 'Continue <i class="bi bi-arrow-right" aria-hidden="true"></i>';
+
+        stepMenu.innerHTML = steps
+          .map((menuStep, index) => {
+            const completed = isStepComplete(index);
+            const current = index === currentStep;
+            const canVisit = index < currentStep && completed;
+            return `
+              <button
+                type="button"
+                class="${completed ? "is-complete" : ""}"
+                data-step="${index}"
+                ${current ? 'aria-current="step"' : ""}
+                ${canVisit ? "" : "disabled"}
+                aria-label="${menuStep.label}${completed ? ", complete" : ""}"
+              >
+                <span class="step-number">${completed ? '<i class="bi bi-check2" aria-hidden="true"></i>' : index + 1}</span>
+                <span class="step-label">${menuStep.label}</span>
+              </button>`;
+          })
+          .join("");
+
+        stepMenu.querySelectorAll("button:not(:disabled)").forEach((button) => {
+          button.addEventListener("click", () => {
+            answers[steps[currentStep].id] = getCurrentField().value;
+            currentStep = Number(button.dataset.step);
+            saveDraft();
+            renderStep();
+          });
+        });
+
+        questionCard.classList.remove("is-entering");
+        void questionCard.offsetWidth;
+        questionCard.classList.add("is-entering");
+        updateProgress();
+        field.focus({ preventScroll: true });
+      }
+
+      function isAnswerValid(index, value) {
+        const step = steps[index];
+        const field = document.createElement(
+          step.type === "select" ? "select" : "input",
+        );
+        field.required = true;
+        if (step.type === "select") {
+          step.options.forEach(([optionValue]) => {
+            const option = document.createElement("option");
+            option.value = optionValue;
+            field.appendChild(option);
+          });
+        } else {
+          field.type = step.type;
+          if (step.minlength) field.minLength = step.minlength;
+        }
+        field.value = value || "";
+        return field.checkValidity();
+      }
+
+      function isStepComplete(index) {
+        const step = steps[index];
+        const value =
+          index === currentStep && getCurrentField()
+            ? getCurrentField().value
+            : answers[step.id];
+        return isAnswerValid(index, value);
+      }
+
+      function updateProgress() {
+        const completed = steps.reduce(
+          (count, _step, index) => count + Number(isStepComplete(index)),
+          0,
+        );
+        const percentage = Math.round((completed / steps.length) * 100);
+        document.getElementById("progressCount").textContent =
+          `${completed} of ${steps.length} complete`;
+        document.getElementById("progressLabel").textContent =
+          completed === steps.length ? "All details complete" : "Your details";
+        progressFill.style.width = `${percentage}%`;
+        progressTrack.setAttribute("aria-valuenow", String(completed));
+        stepMenu.querySelectorAll("button").forEach((button) => {
+          const index = Number(button.dataset.step);
+          const complete = isStepComplete(index);
+          button.classList.toggle("is-complete", complete);
+          const number = button.querySelector(".step-number");
+          number.innerHTML = complete
+            ? '<i class="bi bi-check2" aria-hidden="true"></i>'
+            : String(index + 1);
+          if (index < currentStep && complete) {
+            button.disabled = false;
+          } else if (index !== currentStep) {
+            button.disabled = true;
+          }
+        });
+      }
+
+      function showError(message) {
+        alertBox.innerHTML = "";
+        const alert = document.createElement("div");
+        alert.className = "alert alert-danger mb-0";
+        alert.textContent = message;
+        alertBox.appendChild(alert);
+      }
+
+      backButton.addEventListener("click", () => {
+        if (currentStep > 0) {
+          answers[steps[currentStep].id] = getCurrentField().value;
+          currentStep -= 1;
+          saveDraft();
+          alertBox.innerHTML = "";
+          renderStep();
+        }
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const field = getCurrentField();
+        answers[steps[currentStep].id] = field.value;
+        saveDraft();
+        if (!field.checkValidity()) {
+          field.reportValidity();
+          return;
+        }
+
+        if (currentStep < steps.length - 1) {
+          currentStep += 1;
+          saveDraft();
+          alertBox.innerHTML = "";
+          renderStep();
+          return;
+        }
+
+        if (isSubmitting) return;
+        isSubmitting = true;
+        nextButton.disabled = true;
+        nextButton.innerHTML =
+          '<span class="spinner-border spinner-border-sm" aria-hidden="true"></span> Creating account';
+
+        const payload = {
+          fullName: answers.fullName.trim(),
+          email: answers.email.trim(),
+          password: answers.password,
+          matricNumber: answers.matricNumber.trim(),
+          department: answers.department.trim(),
+          level: Number(answers.level),
+        };
+
+        try {
+          const response = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+            throw new Error(
+              data.message || "Registration failed. Please try again.",
+            );
+          }
+
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("user", JSON.stringify(data.user));
+          removeDraft();
+          window.location.href = "/dashboard";
+        } catch (error) {
+          showError(error.message || "Registration failed. Please try again.");
+          isSubmitting = false;
+          nextButton.disabled = false;
+          nextButton.innerHTML =
+            'Create account <i class="bi bi-check2" aria-hidden="true"></i>';
+        }
+      });
+
+      restoreDraft();
+      renderStep();
+    </script>
+  </body>
+</html>
