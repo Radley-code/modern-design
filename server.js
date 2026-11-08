@@ -72,6 +72,22 @@ app.get('/admin/results', (req, res) => {
 
 app.use('/api/admin', require('./routes/admin'));
 
+app.get('/timetable', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'timetable.html'));
+});
+
+app.get('/admin/students', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin-students.html'));
+});
+
+app.get('/admin/courses', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin-courses.html'));
+});
+
+app.get('/admin/results', (req, res) => {
+  res.sendFile(path.join(__dirname, 'views', 'admin-results.html'));
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);

@@ -100,6 +100,7 @@
           <h2>Welcome back, <span id="welcomeName">Student</span> 👋</h2>
           <p>Here’s an overview of your academic progress.</p>
           <p id="profileLoadError" class="mb-0 mt-2" role="status" hidden></p>
+          <p id="dashboardLoadError" class="mb-0 mt-2" role="status" hidden></p>
         </div>
         <div class="banner-stats">
           <div class="stat">
@@ -282,7 +283,70 @@
       }
     }
 
-    if (token) loadCurrentUser();
+    function renderRecentResults(results) {
+      const tbody = document.getElementById('recentResultsBody');
+      tbody.replaceChildren();
+
+      if (!results.length) {
+        const row = tbody.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 4;
+        cell.className = 'text-center text-muted py-4';
+        cell.textContent = 'No results available yet. Results will appear here once recorded by the admin.';
+        return;
+      }
+
+      results.forEach((result) => {
+        const row = tbody.insertRow();
+        const values = [
+          result.course?.code || '—',
+          result.course?.title || 'Course unavailable',
+          Number.isFinite(Number(result.score)) ? result.score : '—',
+          result.grade || '—'
+        ];
+        values.forEach((value) => {
+          row.insertCell().textContent = String(value);
+        });
+      });
+    }
+
+    async function loadStudentDashboard() {
+      const dashboardError = document.getElementById('dashboardLoadError');
+      try {
+        const response = await fetch('/api/student/dashboard', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success || !result.data) {
+          if (response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = '/login';
+            return;
+          }
+          throw new Error(result.message || 'Unable to load your academic information.');
+        }
+
+        const stats = result.data;
+        const courseCount = Number(stats.registeredCourses) || 0;
+        const gpa = Number(stats.gpa);
+        document.getElementById('courseCount').textContent = String(courseCount);
+        document.getElementById('statCourses').textContent = String(courseCount);
+        document.getElementById('gpaValue').textContent = Number.isFinite(gpa) ? gpa.toFixed(2) : '0.00';
+        document.getElementById('statGPA').textContent = Number.isFinite(gpa) ? gpa.toFixed(2) : '0.00';
+        document.getElementById('statUnits').textContent = String(Number(stats.totalUnits) || 0);
+        renderRecentResults(Array.isArray(stats.recentResults) ? stats.recentResults : []);
+      } catch (error) {
+        dashboardError.textContent = error.message || 'Unable to load your academic information. Please try again.';
+        dashboardError.hidden = false;
+      }
+    }
+
+    if (token) {
+      loadCurrentUser();
+      loadStudentDashboard();
+    }
 
     // ========== LOGOUT ==========
     document.getElementById('logoutBtn').addEventListener('click', (e) => {
