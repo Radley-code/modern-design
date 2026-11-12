@@ -109,6 +109,7 @@ Then open the app in your browser at:
 - http://localhost:5000/login
 - http://localhost:5000/register
 - http://localhost:5000/dashboard
+More pages will be added.
 
 ## Main Routes
 
